@@ -1,0 +1,28 @@
+services:
+  api:
+    build:
+      context: backend/.
+      dockerfile: Dockerfile
+    container_name: youtubedownloads-backend
+    ports:
+      - "3333:3333"
+    volumes:
+      - ./backend:/var/www
+    networks:
+      - youtuberdownloads 
+    restart: always
+  frontend:
+    build:
+      context: ./frontend
+    container_name: youtubedownloads-frontend
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "5173:5173"
+    networks:
+      - youtuberdownloads
+    depends_on:
+      - api
+networks:
+  youtuberdownloads:
+    driver: bridge

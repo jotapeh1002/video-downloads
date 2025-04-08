@@ -1,0 +1,30 @@
+FROM node:18-alpine
+
+RUN apk add --no-cache \
+    git \
+    python3 \
+    py3-pip \
+    py3-virtualenv
+
+WORKDIR /var/www
+
+COPY package*.json yarn.lock ./
+
+COPY . .
+
+RUN yarn install 
+
+EXPOSE 3333
+
+RUN apk add --no-cache git ffmpeg
+
+RUN python3 -m venv /venv \
+    && . /venv/bin/activate \
+    && pip install --upgrade pip \
+    && pip install yt-dlp
+
+ENV PATH="/venv/bin:$PATH"
+
+ENTRYPOINT ["sh", "-c", "yarn dev"]
+
+
